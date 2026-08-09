@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC CLINIC — ปรึกษาคอมพิวเตอร์ฟรี & บริการทำความสะอาด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+
+<nav class="nav">
+  <div class="wrap nav-row">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#14181C" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v12H4z"/><path d="M9 20h6M12 16v4"/></svg>
+      </span>
+      PC CLINIC
+    </a>
+    <div class="nav-links">
+      <a href="index.html#services">บริการ</a>
+      <a href="index.html#how">ขั้นตอนการทำงาน</a>
+      <a href="booking.html">ลงคิวงาน</a>
+      <a href="dashboard.html">ติดตามคิวของฉัน</a>
+    </div>
+    <div class="nav-cta" id="navAuthSlot"></div>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> เปิดรับคิวทุกวัน (หยุดวันอาทิตย์)</span>
+        <h1>ปรึกษาปัญหาคอมพิวเตอร์<span class="accent"> ฟรี</span><br>ทำความสะอาด &amp; ตรวจเช็คโดยช่างจริง</h1>
+        <p class="lead">ลงคิวงานออนไลน์ เลือกบริการที่ต้องการ ระบบคำนวณวันนัดรับเครื่องให้ล่วงหน้าทันที พร้อมติดตามสถานะงานได้ตลอดเวลาผ่านบัญชี Google ของคุณ</p>
+        <div class="hero-actions">
+          <a href="booking.html" class="btn btn-primary">ลงคิวงานตอนนี้</a>
+          <a href="index.html#services" class="btn btn-ghost">ดูบริการทั้งหมด</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>0 บาท</b><span>ค่าปรึกษาเบื้องต้น</span></div>
+          <div class="hero-stat"><b>1–3 วัน</b><span>ระยะเวลาทำงานเฉลี่ย</span></div>
+          <div class="hero-stat"><b>เรียลไทม์</b><span>แจ้งสถานะงานอัตโนมัติ</span></div>
+        </div>
+      </div>
+
+      <!-- signature: live ticket preview -->
+      <div class="ticket">
+        <div class="ticket-head">
+          <div>
+            <div class="tno mono">TICKET #PC-260809-0417</div>
+            <div style="font-size:15px;font-weight:600;margin-top:4px">เปลี่ยนซิลิโคน + ทำความสะอาดภายใน</div>
+          </div>
+          <span class="ticket-status status-in_progress">กำลังดำเนินการ</span>
+        </div>
+        <div class="ticket-perf"></div>
+        <div class="ticket-body">
+          <div class="ticket-track">
+            <div class="track-step done"><span class="line"></span><span class="node"></span><small>ลงคิว</small></div>
+            <div class="track-step done"><span class="line"></span><span class="node"></span><small>รับเครื่อง</small></div>
+            <div class="track-step current"><span class="line"></span><span class="node"></span><small>ดำเนินการ</small></div>
+            <div class="track-step"><span class="line"></span><span class="node"></span><small>พร้อมรับ</small></div>
+          </div>
+          <div class="summary-highlight" style="margin-top:22px">
+            <div class="label">คาดว่าพร้อมรับเครื่อง</div>
+            <div class="value">12 สิงหาคม 2569</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>เลือกบริการที่ต้องการ</h2>
+          <p>แต่ละบริการมีเวลาทำงานโดยประมาณ ระบบจะคำนวณวันนัดรับให้อัตโนมัติตอนลงคิว</p>
+        </div>
+        <span class="tag" id="serviceCount">กำลังโหลด…</span>
+      </div>
+      <div class="cat-grid" id="catGrid">
+        <!-- ใส่ skeleton ระหว่างรอโหลดจาก Supabase -->
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>ขั้นตอนการทำงาน</h2>
+          <p>ตั้งแต่ลงคิวจนถึงวันมารับเครื่อง — ทุกขั้นตอนอัปเดตในบัญชีของคุณ</p>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num mono">01</div>
+          <h4>เลือกบริการ &amp; ลงคิว</h4>
+          <p>เลือกประเภทงาน ระบุอาการเครื่อง แล้วเลือกวันที่จะส่งมอบเครื่อง</p>
+        </div>
+        <div class="step">
+          <div class="num mono">02</div>
+          <h4>ระบบคำนวณวันรับล่วงหน้า</h4>
+          <p>ประเมินวันพร้อมรับเครื่องให้ทันทีจากระยะเวลาทำงานของบริการนั้นๆ</p>
+        </div>
+        <div class="step">
+          <div class="num mono">03</div>
+          <h4>ร้านรับเครื่อง &amp; ดำเนินการ</h4>
+          <p>สถานะในบัญชีของคุณอัปเดตทุกขั้นตอน ตั้งแต่รับเครื่องจนถึงกำลังซ่อม</p>
+        </div>
+        <div class="step">
+          <div class="num mono">04</div>
+          <h4>แจ้งวันพร้อมรับจริง</h4>
+          <p>เมื่องานเสร็จ ระบบแจ้งวันที่มารับเครื่องได้จริงทันทีที่คุณเข้าสู่ระบบ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="card" style="background:linear-gradient(155deg, rgba(232,163,61,0.1), var(--surface))">
+        <div class="card-pad center" style="padding:44px 28px">
+          <h2 style="font-size:24px">พร้อมให้เราดูแลเครื่องของคุณหรือยัง?</h2>
+          <p style="color:var(--text-dim);max-width:48ch;margin:8px auto 24px">ปรึกษาฟรีไม่มีค่าใช้จ่าย หรือจองคิวทำความสะอาดล่วงหน้าได้เลยตอนนี้</p>
+          <a href="booking.html" class="btn btn-primary">ลงคิวงาน</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <span>© 2569 PC CLINIC — บริการปรึกษาและดูแลคอมพิวเตอร์</span>
+    <span>เปิดทุกวัน จันทร์–เสาร์</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+<script>
+const FALLBACK_SERVICES = [
+  { code:"CONSULT-BASIC", name:"ปรึกษาปัญหาคอมพิวเตอร์", description:"พูดคุย วิเคราะห์อาการเครื่อง ให้คำแนะนำเบื้องต้นโดยไม่มีค่าใช้จ่าย", duration_days:0, price:0, is_free:true, icon:"chat" },
+  { code:"CLEAN-EXT", name:"ทำความสะอาดภายนอก", description:"เช็ดทำความสะอาดตัวเครื่อง คีย์บอร์ด หน้าจอ ช่องระบายอากาศ", duration_days:1, price:150, is_free:false, icon:"spray" },
+  { code:"CLEAN-INT", name:"ทำความสะอาดภายใน + เป่าฝุ่น", description:"ถอดฝาเครื่อง เป่าฝุ่นภายใน ทำความสะอาดพัดลมและฮีตซิงก์", duration_days:2, price:300, is_free:false, icon:"fan" },
+  { code:"CLEAN-PASTE", name:"เปลี่ยนซิลิโคน + ทำความสะอาดภายใน", description:"ถอดฝาเครื่อง ทำความสะอาดภายใน เปลี่ยนซิลิโคนระบายความร้อน CPU", duration_days:3, price:450, is_free:false, icon:"droplet" },
+  { code:"CHECKUP-SPEC", name:"ตรวจเช็คสเปค & ประสิทธิภาพ", description:"ตรวจสภาพฮาร์ดแวร์ ทดสอบประสิทธิภาพ แจ้งจุดที่ควรอัปเกรด", duration_days:1, price:0, is_free:true, icon:"gauge" },
+];
+
+const ICONS = {
+  chat: '<path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1.3-4a8.38 8.38 0 0 1-1-4A8.5 8.5 0 0 1 12 3.5a8.38 8.38 0 0 1 9 8Z"/>',
+  spray: '<path d="M4 21h9l3-3-9-9-3 3z"/><path d="M14.5 6.5 18 3l3 3-3.5 3.5"/><path d="M13 6l5 5"/>',
+  fan: '<circle cx="12" cy="12" r="1.5"/><path d="M12 10.5C10 8 8 6 6 6.5S4 10 6.5 12"/><path d="M13.5 12c2.5 2 4.5 4 4 6s-3.5.5-5.5-2"/><path d="M10.5 12c-2.5 2-4.5 4-4 6s3.5.5 5.5-2"/><path d="M13.5 10.5c2-2.5 4-4.5 6-4s-.5 3.5-3 5.5"/>',
+  droplet: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/>',
+  gauge: '<path d="M12 20a8 8 0 1 0-8-8"/><path d="M12 12 16 8"/><path d="M4 12h1M12 4v1M20 12h-1"/>',
+};
+
+function catCardHTML(s){
+  const priceText = s.is_free ? "ฟรี" : `${s.price.toLocaleString()} บาท`;
+  const durText = s.duration_days === 0 ? "ใช้เวลาไม่นาน" : `ประมาณ ${s.duration_days} วันทำการ`;
+  return `
+  <a class="cat-card" href="booking.html?service=${s.code}">
+    <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[s.icon] || ICONS.gauge}</svg></div>
+    <div>
+      <h3>${s.name}</h3>
+      <p>${s.description || ""}</p>
+    </div>
+    <div class="cat-meta">
+      <span class="cat-price ${s.is_free ? "free" : ""}">${priceText}</span>
+      <span class="cat-duration">${durText}</span>
+    </div>
+  </a>`;
+}
+
+async function loadServices(){
+  const grid = document.getElementById("catGrid");
+  const countEl = document.getElementById("serviceCount");
+  let services = FALLBACK_SERVICES;
+  try {
+    const { data, error } = await supabaseClient
+      .from("services")
+      .select("*")
+      .eq("active", true)
+      .order("sort_order", { ascending: true });
+    if (!error && data && data.length) services = data;
+  } catch (e) {
+    // ยังไม่ได้ตั้งค่า Supabase — ใช้ข้อมูลตัวอย่างแทน
+  }
+  grid.innerHTML = services.map(catCardHTML).join("");
+  countEl.textContent = `${services.length} บริการ`;
+}
+
+mountNavAuth();
+loadServices();
+</script>
+</body>
+</html>

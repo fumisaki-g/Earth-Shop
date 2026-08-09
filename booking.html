@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ลงคิวงาน — PC CLINIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+
+<nav class="nav">
+  <div class="wrap nav-row">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#14181C" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v12H4z"/><path d="M9 20h6M12 16v4"/></svg>
+      </span>
+      PC CLINIC
+    </a>
+    <div class="nav-links">
+      <a href="index.html#services">บริการ</a>
+      <a href="index.html#how">ขั้นตอนการทำงาน</a>
+      <a href="booking.html">ลงคิวงาน</a>
+      <a href="dashboard.html">ติดตามคิวของฉัน</a>
+    </div>
+    <div class="nav-cta" id="navAuthSlot"></div>
+  </div>
+</nav>
+
+<main class="main">
+  <section class="section" style="padding-top:44px">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>ลงทะเบียนคิวงาน</h2>
+          <p>เลือกบริการ ระบุวันที่จะส่งมอบเครื่อง แล้วระบบจะคำนวณวันนัดรับให้ล่วงหน้า</p>
+        </div>
+      </div>
+
+      <div id="authNotice" class="alert alert-amber hidden" style="margin-bottom:24px">
+        กรุณาเข้าสู่ระบบด้วย Google ก่อนลงคิวงาน เพื่อให้เราติดตามสถานะงานให้คุณได้
+        <button class="btn btn-primary btn-sm" style="margin-left:auto" id="btnInlineSignIn">เข้าสู่ระบบ</button>
+      </div>
+
+      <form class="form-shell" id="bookingForm">
+        <!-- LEFT: inputs -->
+        <div class="card card-pad">
+          <div class="field">
+            <label>1. เลือกบริการ</label>
+            <div class="radio-cards" id="serviceOptions"><!-- populate by JS --></div>
+          </div>
+
+          <div class="field">
+            <label>2. ประเภทเครื่อง</label>
+            <select id="deviceType" required>
+              <option value="" disabled selected>เลือกประเภทเครื่อง</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>3. อาการ / สิ่งที่ต้องการให้ตรวจ</label>
+            <textarea id="issueNote" placeholder="เช่น เครื่องร้อนง่าย พัดลมมีเสียงดัง หรือแค่ต้องการทำความสะอาดทั่วไป"></textarea>
+          </div>
+
+          <div class="field">
+            <label>4. วันที่จะส่งมอบเครื่อง</label>
+            <input type="date" id="dropoffDate" required>
+            <div class="hint">ร้านหยุดทุกวันอาทิตย์ ระบบจะเลี่ยงวันหยุดให้อัตโนมัติเมื่อคำนวณวันรับ</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnSubmit">ยืนยันลงคิวงาน</button>
+          <div id="formMsg" style="margin-top:14px"></div>
+        </div>
+
+        <!-- RIGHT: live summary ticket -->
+        <div>
+          <div class="ticket">
+            <div class="ticket-head">
+              <div>
+                <div class="tno mono">สรุปคิวงานของคุณ</div>
+                <div style="font-size:15px;font-weight:600;margin-top:4px" id="sumServiceName">ยังไม่ได้เลือกบริการ</div>
+              </div>
+              <span class="ticket-status status-pending">รอส่งมอบเครื่อง</span>
+            </div>
+            <div class="ticket-perf"></div>
+            <div class="ticket-body">
+              <div class="summary-row"><span>ประเภทเครื่อง</span><b id="sumDevice">-</b></div>
+              <div class="summary-row"><span>วันส่งมอบเครื่อง</span><b id="sumDropoff">-</b></div>
+              <div class="summary-row"><span>เวลาทำงานโดยประมาณ</span><b id="sumDuration">-</b></div>
+              <div class="summary-row"><span>ค่าบริการ</span><b id="sumPrice">-</b></div>
+              <div class="summary-highlight">
+                <div class="label">วันนัดรับเครื่อง (ประเมิน)</div>
+                <div class="value" id="sumReadyDate">เลือกวันส่งมอบก่อน</div>
+              </div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:14px;color:var(--muted);font-size:12.5px">
+            * วันที่ประเมินอาจเปลี่ยนแปลงได้ตามคิวงานจริงหน้าร้าน ระบบจะแจ้งวันพร้อมรับจริงให้ทันทีในหน้า “ติดตามคิวของฉัน” เมื่อร้านดำเนินการเสร็จ
+          </p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <span>© 2569 PC CLINIC — บริการปรึกษาและดูแลคอมพิวเตอร์</span>
+    <span>เปิดทุกวัน จันทร์–เสาร์</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+<script>
+const FALLBACK_SERVICES = [
+  { id:"CONSULT-BASIC", code:"CONSULT-BASIC", name:"ปรึกษาปัญหาคอมพิวเตอร์", description:"ไม่มีค่าใช้จ่าย", duration_days:0, price:0, is_free:true },
+  { id:"CLEAN-EXT", code:"CLEAN-EXT", name:"ทำความสะอาดภายนอก", description:"เช็ดทำความสะอาดตัวเครื่อง คีย์บอร์ด หน้าจอ", duration_days:1, price:150, is_free:false },
+  { id:"CLEAN-INT", code:"CLEAN-INT", name:"ทำความสะอาดภายใน + เป่าฝุ่น", description:"ถอดฝาเครื่อง เป่าฝุ่น ทำความสะอาดพัดลม", duration_days:2, price:300, is_free:false },
+  { id:"CLEAN-PASTE", code:"CLEAN-PASTE", name:"เปลี่ยนซิลิโคน + ทำความสะอาดภายใน", description:"เปลี่ยนซิลิโคนระบายความร้อน CPU", duration_days:3, price:450, is_free:false },
+  { id:"CHECKUP-SPEC", code:"CHECKUP-SPEC", name:"ตรวจเช็คสเปค & ประสิทธิภาพ", description:"ไม่มีค่าใช้จ่าย", duration_days:1, price:0, is_free:true },
+];
+
+let services = [];
+let selectedService = null;
+let currentUser = null;
+
+function fillDeviceOptions(){
+  const sel = document.getElementById("deviceType");
+  DEVICE_TYPES.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d; opt.textContent = d;
+    sel.appendChild(opt);
+  });
+}
+
+function renderServiceOptions(){
+  const box = document.getElementById("serviceOptions");
+  box.innerHTML = services.map(s => `
+    <label class="radio-card" data-id="${s.id}">
+      <input type="radio" name="service" value="${s.id}">
+      <div>
+        <div class="rc-title">${s.name}</div>
+        <div class="rc-desc">${s.description || ""} · ${s.duration_days === 0 ? "ไม่ใช้เวลานาน" : `~${s.duration_days} วันทำการ`}</div>
+      </div>
+      <span class="rc-price ${s.is_free ? "free" : ""}">${s.is_free ? "ฟรี" : s.price.toLocaleString() + " บาท"}</span>
+    </label>
+  `).join("");
+
+  box.querySelectorAll(".radio-card").forEach(card => {
+    card.addEventListener("click", () => {
+      box.querySelectorAll(".radio-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      card.querySelector("input").checked = true;
+      selectedService = services.find(s => s.id === card.dataset.id);
+      updateSummary();
+    });
+  });
+
+  // preselect from ?service=CODE
+  const params = new URLSearchParams(location.search);
+  const preselectCode = params.get("service");
+  if (preselectCode) {
+    const match = services.find(s => s.code === preselectCode);
+    if (match) box.querySelector(`[data-id="${match.id}"]`)?.click();
+  }
+}
+
+function updateSummary(){
+  document.getElementById("sumServiceName").textContent = selectedService ? selectedService.name : "ยังไม่ได้เลือกบริการ";
+  document.getElementById("sumDevice").textContent = document.getElementById("deviceType").value || "-";
+  document.getElementById("sumDuration").textContent = selectedService
+    ? (selectedService.duration_days === 0 ? "ไม่ใช้เวลานาน" : `${selectedService.duration_days} วันทำการ`)
+    : "-";
+  document.getElementById("sumPrice").textContent = selectedService
+    ? (selectedService.is_free ? "ฟรี" : `${selectedService.price.toLocaleString()} บาท`)
+    : "-";
+
+  const dropoff = document.getElementById("dropoffDate").value;
+  document.getElementById("sumDropoff").textContent = dropoff ? formatThaiDate(dropoff) : "-";
+
+  const readyEl = document.getElementById("sumReadyDate");
+  if (selectedService && dropoff) {
+    const ready = addWorkingDays(dropoff, selectedService.duration_days);
+    readyEl.textContent = formatThaiDate(ready);
+    readyEl.dataset.value = ready;
+  } else {
+    readyEl.textContent = "เลือกบริการและวันส่งมอบก่อน";
+    readyEl.dataset.value = "";
+  }
+}
+
+async function loadServices(){
+  services = FALLBACK_SERVICES;
+  try {
+    const { data, error } = await supabaseClient.from("services").select("*").eq("active", true).order("sort_order");
+    if (!error && data && data.length) services = data;
+  } catch(e) { /* ใช้ fallback */ }
+  renderServiceOptions();
+}
+
+async function initAuthState(){
+  currentUser = await getCurrentUser();
+  document.getElementById("authNotice").classList.toggle("hidden", !!currentUser);
+}
+
+document.getElementById("deviceType").addEventListener("change", updateSummary);
+document.getElementById("dropoffDate").addEventListener("change", updateSummary);
+document.getElementById("btnInlineSignIn").addEventListener("click", () => signInWithGoogle("booking.html"));
+
+document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("formMsg");
+  msg.innerHTML = "";
+
+  if (!currentUser) {
+    msg.innerHTML = `<div class="alert alert-amber">กรุณาเข้าสู่ระบบด้วย Google ก่อนลงคิวงาน</div>`;
+    return;
+  }
+  if (!selectedService) {
+    msg.innerHTML = `<div class="alert alert-red">กรุณาเลือกบริการ</div>`;
+    return;
+  }
+  const device = document.getElementById("deviceType").value;
+  const dropoff = document.getElementById("dropoffDate").value;
+  if (!device || !dropoff) {
+    msg.innerHTML = `<div class="alert alert-red">กรุณากรอกข้อมูลให้ครบ</div>`;
+    return;
+  }
+
+  const readyDate = addWorkingDays(dropoff, selectedService.duration_days);
+  const btn = document.getElementById("btnSubmit");
+  btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> กำลังบันทึก...`;
+
+  try {
+    const { error } = await supabaseClient.from("bookings").insert({
+      user_id: currentUser.id,
+      service_id: selectedService.id,
+      device_type: device,
+      issue_note: document.getElementById("issueNote").value,
+      dropoff_date: dropoff,
+      estimated_ready_date: readyDate,
+      status: "pending",
+    });
+    if (error) throw error;
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    msg.innerHTML = `<div class="alert alert-red">บันทึกไม่สำเร็จ: ${err.message || "กรุณาตรวจสอบการตั้งค่า Supabase"}</div>`;
+    btn.disabled = false; btn.innerHTML = "ยืนยันลงคิวงาน";
+  }
+});
+
+document.getElementById("dropoffDate").min = todayISO();
+
+mountNavAuth();
+fillDeviceOptions();
+loadServices();
+initAuthState();
+</script>
+</body>
+</html>

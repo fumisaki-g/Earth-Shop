@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ติดตามคิวของฉัน — PC CLINIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+
+<nav class="nav">
+  <div class="wrap nav-row">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#14181C" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v12H4z"/><path d="M9 20h6M12 16v4"/></svg>
+      </span>
+      PC CLINIC
+    </a>
+    <div class="nav-links">
+      <a href="index.html#services">บริการ</a>
+      <a href="index.html#how">ขั้นตอนการทำงาน</a>
+      <a href="booking.html">ลงคิวงาน</a>
+      <a href="dashboard.html">ติดตามคิวของฉัน</a>
+    </div>
+    <div class="nav-cta" id="navAuthSlot"></div>
+  </div>
+</nav>
+
+<main class="main">
+  <section class="section" style="padding-top:44px">
+    <div class="wrap">
+
+      <!-- Not logged in -->
+      <div id="loggedOutView" class="hidden">
+        <div class="empty card" style="padding:70px 20px">
+          <h3>เข้าสู่ระบบเพื่อดูคิวงานของคุณ</h3>
+          <p style="margin:8px 0 22px">ล็อกอินด้วย Google เพื่อติดตามสถานะงานและรับแจ้งเตือนความคืบหน้าแบบเรียลไทม์</p>
+          <button class="btn btn-primary" id="btnDashSignIn">เข้าสู่ระบบด้วย Google</button>
+        </div>
+      </div>
+
+      <!-- Logged in -->
+      <div id="loggedInView" class="hidden">
+        <div class="section-head">
+          <div>
+            <h2>คิวงานของฉัน</h2>
+            <p id="userGreeting"></p>
+          </div>
+          <a href="booking.html" class="btn btn-primary btn-sm">+ ลงคิวใหม่</a>
+        </div>
+
+        <div id="notifyBanner"></div>
+
+        <div id="bookingList" style="display:grid;gap:18px;margin-top:8px"></div>
+
+        <div id="emptyState" class="empty card hidden" style="padding:60px 20px;margin-top:8px">
+          <h3>ยังไม่มีคิวงาน</h3>
+          <p style="margin:8px 0 22px">เริ่มลงคิวงานแรกของคุณได้เลย ทั้งปรึกษาฟรีหรือทำความสะอาดเครื่อง</p>
+          <a href="booking.html" class="btn btn-primary">ลงคิวงาน</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <span>© 2569 PC CLINIC — บริการปรึกษาและดูแลคอมพิวเตอร์</span>
+    <span>เปิดทุกวัน จันทร์–เสาร์</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+<script>
+let currentUser = null;
+
+function ticketCardHTML(b){
+  const service = b.services || { name: "บริการ" };
+  const isReady = b.status === "ready" || b.status === "completed";
+  return `
+  <div class="ticket">
+    <div class="ticket-head">
+      <div>
+        <div class="tno mono">TICKET #${b.ticket_no}</div>
+        <div style="font-size:15px;font-weight:600;margin-top:4px">${service.name}</div>
+      </div>
+      <span class="ticket-status status-${b.status}">${STATUS_LABEL[b.status] || b.status}</span>
+    </div>
+    <div class="ticket-perf"></div>
+    <div class="ticket-body">
+      ${buildTrackHTML(b.status)}
+      <div style="margin-top:18px">
+        <div class="summary-row"><span>ประเภทเครื่อง</span><b>${b.device_type}</b></div>
+        <div class="summary-row"><span>วันส่งมอบเครื่อง</span><b>${formatThaiDate(b.dropoff_date)}</b></div>
+        ${b.issue_note ? `<div class="summary-row"><span>อาการที่แจ้ง</span><b style="font-weight:400;text-align:right;max-width:60%">${b.issue_note}</b></div>` : ""}
+      </div>
+      <div class="summary-highlight" style="${isReady ? 'border-color:var(--teal-dim)' : ''}">
+        <div class="label">${isReady ? "พร้อมรับเครื่องวันที่" : "วันนัดรับเครื่อง (ประเมิน)"}</div>
+        <div class="value">${formatThaiDate(isReady && b.actual_ready_date ? b.actual_ready_date : b.estimated_ready_date)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderNotifyBanner(changed){
+  const el = document.getElementById("notifyBanner");
+  if (!changed.length) { el.innerHTML = ""; return; }
+  el.innerHTML = changed.map(b => `
+    <div class="alert alert-teal" style="margin-bottom:14px">
+      งาน <b class="mono">#${b.ticket_no}</b> อัปเดตสถานะเป็น “${STATUS_LABEL[b.status]}” แล้ว
+    </div>`).join("");
+}
+
+async function loadBookings(){
+  const { data, error } = await supabaseClient
+    .from("bookings")
+    .select("*, services(name, code)")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  const listEl = document.getElementById("bookingList");
+  const emptyEl = document.getElementById("emptyState");
+
+  if (error) {
+    listEl.innerHTML = `<div class="alert alert-red">โหลดข้อมูลไม่สำเร็จ: ${error.message}</div>`;
+    return;
+  }
+  if (!data || !data.length) {
+    listEl.innerHTML = "";
+    emptyEl.classList.remove("hidden");
+    return;
+  }
+  emptyEl.classList.add("hidden");
+  listEl.innerHTML = data.map(ticketCardHTML).join("");
+  renderNotifyBanner(checkStatusChanges(data));
+}
+
+function subscribeRealtime(){
+  supabaseClient
+    .channel("bookings-changes")
+    .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${currentUser.id}` }, () => {
+      loadBookings();
+    })
+    .subscribe();
+}
+
+async function init(){
+  currentUser = await getCurrentUser();
+  if (!currentUser) {
+    document.getElementById("loggedOutView").classList.remove("hidden");
+    return;
+  }
+  document.getElementById("loggedInView").classList.remove("hidden");
+  document.getElementById("userGreeting").textContent =
+    `สวัสดี ${currentUser.user_metadata?.full_name || currentUser.email}`;
+  await loadBookings();
+  subscribeRealtime();
+}
+
+document.getElementById("btnDashSignIn").addEventListener("click", () => signInWithGoogle("dashboard.html"));
+
+mountNavAuth();
+init();
+</script>
+</body>
+</html>
